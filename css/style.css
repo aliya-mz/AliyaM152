@@ -1,0 +1,80 @@
+/*
+  Date       : Janvier-Mars 2021
+  Auteur     : Aliya Myaz
+  Sujet      : Page d'accueil du projet de vol de sites
+ */
+
+ @import url('https://fonts.googleapis.com/css2?family=Zilla+Slab&display=swap');
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+body{
+    background-color: #A9A5D1;
+    color: #555555;
+}
+
+nav{
+    height:150px;
+    background-color: #D6D4E9;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-left:5%;
+    padding-right:5%;
+    padding-top:3%;
+    padding-bottom:3%;
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+img{
+    height:120px;
+}
+
+/*Formulaire*/
+table{
+    border-collapse: collapse;
+    width:35%;
+}
+
+tr{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+td{
+    width:100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.formTable td{
+    height:40px;
+}
+
+
+button{
+    width:100%;
+    background-color: #A2CCE6;
+    border:none;
+    color: #555555;
+}
+
+input{
+    width:100%;
+    border:none;
+    background-color: #EFF7FC;
+    color: #555555;
+}
