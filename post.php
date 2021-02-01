@@ -4,19 +4,19 @@
   Auteur     : Aliya Myaz
   Sujet      : Page d'accueil du projet portfolio
  */
+session_start();
 
-include("backend/autoload.php");
 $urlAVoler = FILTER_INPUT(INPUT_POST, "urlAVoler", FILTER_SANITIZE_STRING);
+$submit = FILTER_INPUT(INPUT_POST, "btnSubmit", FILTER_SANITIZE_STRING);
+
 if($submit){
-    //si une url a été entrée dans formulaire
-    if (!empty($urlAVoler)){
-      //ajouter le site correspondant à l'url, avec son contenu, dans bd
-      createPage($urlAVoler, LirePage($urlAVoler)[0], LirePage($urlAVoler)[1]);
-    }
+  if($submit = "publier"){
+
+  }
+  else if($submit = "annuler"){
+    header()
+  }
 }
-<td><input type="text" name="texte" colspan="2" placeholder="Veuillez entrer un texte" value="<?php echo $texte;?>"></td>
-<td><button type="submit" name="btnSubmit" value="newText">Enregistrer</button></td>
-</tr>
 
 ?>
 
@@ -33,19 +33,26 @@ if($submit){
   </nav>
   <main>
 
-    <form>
+    <form method="post" action="post.php" enctype="multipart/form-data">
       <table>
         <tr>
           <td>
+            <div>              
+              <textarea name="note" placeholder="Ecris quelque chose..." rows="4" cols="50"></textarea>
+            </div>
+            <div class="verticalFlex">
+              <button class="smallBtn" type="submit" name="annuler" value="annuler">X</button>
+              <button class="smallBtn" name="partager" value="partager">-></button>
+            </div>
           </td>
         </tr>
         <tr>
           <td>
             <div>
-              <input type="file" name="mediafiles[]" colspan="2" accept="image/*" multiple>
+              <input type="file" name="mediafiles[]" colspan="2" accept="image/*" multiple/>
             </div>
             <div>
-              <button type="submit" name="btnSubmit" value="newText">Enregistrer</button>
+              <button type="submit" name="btnSubmit" value="publier">Publier</button>
             </div>
           </td>
         </tr>

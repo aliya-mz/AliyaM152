@@ -17,7 +17,7 @@ body{
 }
 
 nav{
-    height:150px;
+    height:50px;
     background-color: #D6D4E9;
     display: flex;
     flex-direction: row;
@@ -40,9 +40,14 @@ img{
 }
 
 /*Formulaire*/
+form{
+    width: 50%;
+    margin-top: 40px;
+}
+
 table{
     border-collapse: collapse;
-    width:35%;
+    width:50%;
 }
 
 tr{
@@ -64,9 +69,14 @@ td{
     height:40px;
 }
 
+textarea{
+    width:800px;
+    height:80px;
+}
 
 button{
-    width:100%;
+    width:120px;
+    height: 25px;
     background-color: #A2CCE6;
     border:none;
     color: #555555;
@@ -77,4 +87,15 @@ input{
     border:none;
     background-color: #EFF7FC;
     color: #555555;
+}
+
+.smallBtn{
+    height: 40px;
+    width: 40px;
+}
+
+.verticalFlex{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
