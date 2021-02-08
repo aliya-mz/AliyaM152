@@ -14,7 +14,7 @@ if($submit){
 
   }
   else if($submit = "annuler"){
-    header()
+ 
   }
 }
 
@@ -37,7 +37,7 @@ if($submit){
       <table>
         <tr>
           <td>
-            <div>              
+            <div class="takeAllWidth">
               <textarea name="note" placeholder="Ecris quelque chose..." rows="4" cols="50"></textarea>
             </div>
             <div class="verticalFlex">
@@ -48,12 +48,8 @@ if($submit){
         </tr>
         <tr>
           <td>
-            <div>
-              <input type="file" name="mediafiles[]" colspan="2" accept="image/*" multiple/>
-            </div>
-            <div>
-              <button type="submit" name="btnSubmit" value="publier">Publier</button>
-            </div>
+            <input type="file" name="mediafiles[]" colspan="2" accept="image/*" multiple/>            
+            <button type="submit" name="btnSubmit" value="publier">Publier</button>
           </td>
         </tr>
       </table>
