@@ -4,19 +4,26 @@
   Auteur     : Aliya Myaz
   Sujet      : Page d'accueil du projet portfolio
  */
+
 session_start();
 
-$urlAVoler = FILTER_INPUT(INPUT_POST, "urlAVoler", FILTER_SANITIZE_STRING);
+$commentaire = FILTER_INPUT(INPUT_POST, "commentaire", FILTER_SANITIZE_STRING);
 $submit = FILTER_INPUT(INPUT_POST, "btnSubmit", FILTER_SANITIZE_STRING);
 
+//Gestion d'envoi de formlaire
 if($submit){
   if($submit = "publier"){
-
+    EnregistrerPost($commentaire)
   }
   else if($submit = "annuler"){
  
   }
 }
+
+//Quand on sélectionne des dossiers
+if(isset($_FILES) && is_array($_FILES) && count($_FILES)>0) {
+  UploadPost();
+}  
 
 ?>
 
@@ -48,7 +55,7 @@ if($submit){
         </tr>
         <tr>
           <td>
-            <input type="file" name="mediafiles[]" colspan="2" accept="image/*" multiple/>            
+            <input type="file" name="mesFichiers[]" colspan="2" accept="image/*" multiple/>            
             <button type="submit" name="btnSubmit" value="publier">Publier</button>
           </td>
         </tr>

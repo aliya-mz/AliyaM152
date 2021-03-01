@@ -5,8 +5,6 @@
   Sujet      : Gestion de la table "note"
  */
 
-//OK
-
 function readPost($idPost){
   static $ps = null;
   $sql = "SELECT *, DATE_FORMAT(`dateCreation`, '%d/%m/%Y %H:%i:%s') as dateCFormatee, DATE_FORMAT(`dateModification`, '%d/%m/%Y %H:%i:%s') as dateMFormatee FROM post, media WHERE post.idPost = :idPost AND media.idPost = :idPost";
@@ -18,6 +16,24 @@ function readPost($idPost){
   try{
     $ps->bindParam(':idPost', $idPost, PDO::PARAM_INT);
 
+    if($ps->execute())
+      $answer = $ps->fetch(PDO::FETCH_ASSOC);
+  }
+  catch(PDOException $e){
+    echo $e->getMessage();
+  }
+  return $answer;
+}
+
+function readLastPost(){
+  static $ps = null;
+  $sql = "SELECT MAX(idPost) FROM post";
+
+  if($ps == null){
+    $ps = db()->prepare($sql);
+  }
+  $answer = false;
+  try{
     if($ps->execute())
       $answer = $ps->fetch(PDO::FETCH_ASSOC);
   }

@@ -5,23 +5,41 @@
   Sujet      : Fonctions du projet
 */
 
-//enregistrer les données
-function EnregistrerPost(){
-  //Vérifier la taille des images et du post
-  if(verif)
-
-  $_FILES[‘img']['name'] //Le nom original du fichier, comme sur le disque du visiteur (exemple : mon_icone.png).
-
-$_FILES[‘img']['type'] //Le type du fichier. Par exemple, cela peut être « image/png ».
-z
-$_FILES[‘img']['size'] //La taille du fichier en octets.
-
-$_FILES[‘img']['tmp_name'] //L'adresse vers le fichier uploadé dans le répertoire temporaire.
-
-$_FILES[‘img']['error'] //Le code d'erreur, qui permet de savoir si le fichier a bien été uploadé.
+//Vérifier la validité des fichiers
+function UploadPost(){  
+  //Raccourci d'écriture pour le tableau reçu
+  $fichiers = $_FILES['mesfichiers'];
+  //Parcourir les fichiers
+  for($i=0;$i<count($fichiers['name']);$i++){
+    if($fichiers['size'][$i]<2000000){
+      // Nettoyage du nom de fichier
+      $nom_fichier = preg_replace('/[^a-z0-9\.\-]/
+      i','',$fichiers['name'][$i]);
+      //Déplacement depuis le répertoire temporaire
+      move_uploaded_file($fichiers['tmp_name'][$i],'uploads/
+      '.$nom_fichier);
+      //Si le type MIME correspond à une image, on l’affiche
+      if(preg_match('/image/',$fichiers['type'][$i])) {
+      }
+    }
+    else{
+      $erreur = 'Veuillez uploader une image de taille inférieure à 2G';
+      echo $erreur;
+    }  
+  }
 }
 
-//Affichage des posts
+//enregistrer des données
+function EnregistrerPost($commentaire, $fichiers){
+  //Créer le nouveau post avec les données entrées par l'utilisateur
+  createPost($commentaire);
+  //Parcourir les fichiers sélectionnés par l'utilisateur
+  for($i=0;$i<count($fichiers['name']);$i++){
+    createMedia(ReadLastPost(), $fichiers['type'][$i], $fichiers['name'][$i]);
+  }
+}
+
+//Affichage des posts (CHAPITRE 3)
 /*
 function ideesToHtmlTable($idees, $mesIdees, $favoris){
     $note = "";
