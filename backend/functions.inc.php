@@ -33,7 +33,7 @@ function UploadPost(){
 function EnregistrerPost($commentaire, $fichiers){
   //Créer le nouveau post avec les données entrées par l'utilisateur
   createPost($commentaire);
-  //Parcourir les fichiers sélectionnés par l'utilisateur
+  //Parcourir les fichiers sélectionnés par l'utilisateur et les ajouter dans la BD
   for($i=0;$i<count($fichiers['name']);$i++){
     createMedia(ReadLastPost(), $fichiers['type'][$i], $fichiers['name'][$i]);
   }

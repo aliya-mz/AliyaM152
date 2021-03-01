@@ -13,7 +13,7 @@ $submit = FILTER_INPUT(INPUT_POST, "btnSubmit", FILTER_SANITIZE_STRING);
 //Gestion d'envoi de formlaire
 if($submit){
   if($submit = "publier"){
-    EnregistrerPost($commentaire)
+    EnregistrerPost($commentaire);
   }
   else if($submit = "annuler"){
  
