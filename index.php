@@ -9,7 +9,6 @@
 
 session_start();
 
-$urlAVoler = FILTER_INPUT(INPUT_POST, "urlAVoler", FILTER_SANITIZE_STRING);
 ?>
 
 <!DOCTYPE html>
@@ -21,11 +20,11 @@ $urlAVoler = FILTER_INPUT(INPUT_POST, "urlAVoler", FILTER_SANITIZE_STRING);
   </head>
   <body>
   <nav>
-    <a href="post.php">Poster</a>
+    <a href="newPost.php">Poster</a>
   </nav>
   <main>
     <?php
-    
+      //affichage
     ?>
   </main>
   </body>

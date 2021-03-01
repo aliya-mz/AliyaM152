@@ -1,10 +1,6 @@
 <?php
 require_once('database/constantes.inc.php');
 require_once('database/connect.php');
-require_once("database/utilisateur.php");
-require_once("database/idee.php");
-require_once("database/categorie.php");
-require_once("database/tag.php");
-require_once("database/annoter.php");
-require_once("database/mettre_favoris.php");
+require_once("database/media.php");
+require_once("database/post.php");
 require_once("functions.inc.php");

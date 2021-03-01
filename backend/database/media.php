@@ -5,22 +5,19 @@
   Sujet      : Gestion de la table "note"
  */
 
-function readNoteByIdeeIdAndUser($idIdee, $idUser){
-  //initaliser le prepare statement
-  static $ps = null;
-  //requête
-  $sql = "SELECT * FROM annoter WHERE idUser = :idUser AND idIdee = :idIdee";
+//OK
 
-  //si le prepare statement n'a encore jamais été fait
+
+function readMedias($idPost){
+  static $ps = null;
+  $sql = "SELECT *, DATE_FORMAT(`dateCreation`, '%d/%m/%Y %H:%i:%s') as dateCFormatee FROM media WHERE idPost = :idPost";
+
   if($ps == null){
-    //préparer la requête
     $ps = db()->prepare($sql);
   }
   $answer = false;
   try{
-    //lier le paramètre dans la requête avec la variable
-    $ps->bindParam(':idIdee', $idIdee, PDO::PARAM_INT);
-    $ps->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+    $ps->bindParam(':idPost', $idPost, PDO::PARAM_INT);
 
     if($ps->execute())
       $answer = $ps->fetch(PDO::FETCH_ASSOC);
@@ -31,76 +28,43 @@ function readNoteByIdeeIdAndUser($idIdee, $idUser){
   return $answer;
 }
 
-function createNote($idIdee, $idUser, $note){
-  //initaliser le prepare statement
+function createMedia($idPost, $type, $nom){
   static $ps = null;
-  //requête
-  $sql = "INSERT INTO `annoter` (`idIdee`, `idUser`, `note`) VALUES ( :idIdee, :idUser, :note)";
+  $sql = "INSERT INTO `media` (`idPost`, `type`, `nom`, `dateCreation`, `dateModification`) VALUES ( :idIdee, :idUser, :note, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
 
-  //si le prepare statement n'a encore jamais été fait
   if($ps == null){
-    //préparer la requête
     $ps = db()->prepare($sql);
   }
   $answer = false;
   try{
-    //lier le paramètre dans la requête avec la variable
-    $ps->bindParam(':idIdee', $idIdee, PDO::PARAM_INT);
-    $ps->bindParam(':idUser', $idUser, PDO::PARAM_INT);
-    $ps->bindParam(':note', $note, PDO::PARAM_STR);
+    $ps->bindParam(':idPost', $idPost, PDO::PARAM_INT);
+    $ps->bindParam(':type', $type, PDO::PARAM_STR);
+    $ps->bindParam(':nom', $nom, PDO::PARAM_STR);
 
     $answer = $ps->execute();
-    echo "La note a bien été créée";
+
+    if($answer){
+      echo "Le media a bien été ajouté";
+    }
   }
   catch(PDOException $e){
     echo $e->getMessage();
-    echo "Un problème est survenu lors de la création de la note";
+    echo "Un problème est survenu lors de la création du media";
   }
 
   return $answer;
 }
 
-function updateNote($idNote, $note){
-  //initaliser le prepare statement
+function deleteMedia($idMedia){
   static $ps = null;
-  //requête
-  $sql = 'UPDATE annoter SET note = :note WHERE idnote = :idNote';
+  $sql = 'DELETE FROM media WHERE idMedia = :idMedia';
 
-  //si le prépare statement n'a encore jamais été fait
   if($ps == null){
-    //préparer la requête
     $ps = db()->prepare($sql);
   }
   $answer = false;
   try{
-    //lier le paramètre dans la requête avec la variable
-    $ps->bindParam(':idNote', $idNote, PDO::PARAM_INT);
-    $ps->bindParam(':note', $note, PDO::PARAM_STR);
-
-    $answer = $ps->execute();
-  }
-  catch(PDOException $e){
-    echo $e->getMessage();
-  }
-
-  return $answer;
-}
-
-function deleteNote($idNote){
-  //initaliser le prepare statement
-  static $ps = null;
-  //requête
-  $sql = 'DELETE FROM annoter WHERE idnote = :idNote';
-
-  //si le prepare statement n'a encore jamais été fait
-  if($ps == null){
-    //préparer la requête
-    $ps = db()->prepare($sql);
-  }
-  $answer = false;
-  try{
-    //lier le paramètre dans la requête avec la variable
-    $ps->bindParam(':idNote', $idNote, PDO::PARAM_INT);
+    $ps->bindParam(':idMedia', $idMedia, PDO::PARAM_INT);
 
     $answer = $ps->execute();
   }

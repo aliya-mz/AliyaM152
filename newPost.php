@@ -38,7 +38,7 @@ if($submit){
         <tr>
           <td>
             <div class="takeAllWidth">
-              <textarea name="note" placeholder="Ecris quelque chose..." rows="4" cols="50"></textarea>
+              <textarea name="commentaire" placeholder="Ecris quelque chose..." rows="4" cols="50"></textarea>
             </div>
             <div class="verticalFlex">
               <button class="smallBtn" type="submit" name="annuler" value="annuler">X</button>

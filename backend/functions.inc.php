@@ -5,11 +5,24 @@
   Sujet      : Fonctions du projet
 */
 
-/*
-pouvoir mettre en favoris/enlever des favoris grâce au bouton
-*/
+//enregistrer les données
+function EnregistrerPost(){
+  //Vérifier la taille des images et du post
+  if(verif)
 
-//Affichage du tableau de notes récupérées dans la BD
+  $_FILES[‘img']['name'] //Le nom original du fichier, comme sur le disque du visiteur (exemple : mon_icone.png).
+
+$_FILES[‘img']['type'] //Le type du fichier. Par exemple, cela peut être « image/png ».
+z
+$_FILES[‘img']['size'] //La taille du fichier en octets.
+
+$_FILES[‘img']['tmp_name'] //L'adresse vers le fichier uploadé dans le répertoire temporaire.
+
+$_FILES[‘img']['error'] //Le code d'erreur, qui permet de savoir si le fichier a bien été uploadé.
+}
+
+//Affichage des posts
+/*
 function ideesToHtmlTable($idees, $mesIdees, $favoris){
     $note = "";
 
@@ -61,69 +74,4 @@ function ideesToHtmlTable($idees, $mesIdees, $favoris){
       }
     echo "</tbody>";
 }
-
-function changerEtatFavoris($idIdee){
-  //si l'idée est déjà dans les favoris
-  if(ideeEstFavoris($idIdee)){
-    //supprimer l'enregistrement de mise en favoris dans la BD
-    deleteFavoris($idIdee, $_SESSION["idUser"]);
-  }
-  //sinon
-  else{
-    //créer l'enregistrement de favoris
-    createFavoris($idIdee, $_SESSION["idUser"]);
-  }
-}
-
-function ideeEstFavoris($idIdee){
-  $estFavoris = false;
-  $estFavoris = readFavorisByIdea($idIdee, $_SESSION["idUser"]);
-  return $estFavoris;
-}
-
-//Affichage de la liste déroulante des catégories
-function categorieToSelect($categories, $categorieSelect){
-  //afficher le select
-  echo "<select name=\"categorie\">";
-  //pour chaque branche
-  foreach($categories as $categorie){
-
-    //si la branche est celle sélecionnée précédemment (sticky)
-    if($categorie["idCategorie"] == $categorieSelect){
-      echo "<option value=\"".$categorie["idCategorie"]."\" selected>".$categorie["nom"]."</option>";
-    }
-    //sinon
-    else{
-      echo "<option value=\"".$categorie["idCategorie"]."\">".$categorie["nom"]."</option>";
-    }
-  }
-  echo "</select>";
-}
-
-function AjouterTagsIdee($tags, $idIdee){
-  //ajouter chaque tag de l'idée dans la BD
-  foreach($tags as $tag){
-    CreateTag($tag, $idIdee);
-  }
-}
-
-function VerifierAccessibilite($connecte){
-  //$connecte = true => permettre aux personnes connectées
-  if($connecte){
-    //tester si on doit pouvoir accéder à cette page
-    if(!isset($_SESSION["idUser"])){
-      //erreur, utilisateur déconnecté, renvoyer sur la page d'accueil
-      header('Location: index.php');
-      exit;
-    }
-  }
-  else{
-    //tester si on doit pouvoir accéder à cette page
-    if(isset($_SESSION["idUser"])){
-      //erreur, utilisateur déconnecté, renvoyer sur la page d'accueil
-      header('Location: index.php');
-      exit;
-    }
-  }
-
-}
+*/
