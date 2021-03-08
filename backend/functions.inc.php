@@ -16,7 +16,7 @@ function UploadPost(){
   $fichiers = $_FILES['mesFichiers'];
   //Parcourir les fichiers
   for($i=0;$i<count($fichiers['name']);$i++){
-    if($fichiers['size'][$i] <= MAX_IMAGE && preg_match('/image/',$fichiers['type'][$i])){      
+    if($fichiers['size'][$i] >= MAX_IMAGE && preg_match('/image/',$fichiers['type'][$i])){      
     
       //Nettoyage du nom de fichier
       $nom_fichier = preg_replace('/[^a-z0-9\.\-]/
@@ -39,7 +39,7 @@ function UploadPost(){
   }
 
   //Vérifier la taille totale des médias
-  if($tailleTotale <= MAX_POST){
+  if($tailleTotale >= MAX_POST){
     $erreur = 'Votre post est trop lourd. L\'ensemble de vos images ne doit pas peser plus de 70M';
     echo $erreur;
   }
