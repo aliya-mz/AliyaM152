@@ -28,9 +28,9 @@ function readMedias($idPost){
   return $answer;
 }
 
-function createMedia($idPost, $type, $nom){
+function createMedia($idPost, $typeMedia, $nom){
   static $ps = null;
-  $sql = "INSERT INTO `media` (`idPost`, `type`, `nom`, `dateCreation`, `dateModification`) VALUES ( :idIdee, :idUser, :note, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+  $sql = "INSERT INTO `media` (`idPost`, `type`, `nom`) VALUES ( :idIdee, :typeMedia, :note)";
 
   if($ps == null){
     $ps = db()->prepare($sql);
@@ -38,7 +38,7 @@ function createMedia($idPost, $type, $nom){
   $answer = false;
   try{
     $ps->bindParam(':idPost', $idPost, PDO::PARAM_INT);
-    $ps->bindParam(':type', $type, PDO::PARAM_STR);
+    $ps->bindParam(':typeMedia', $typeMedia, PDO::PARAM_STR);
     $ps->bindParam(':nom', $nom, PDO::PARAM_STR);
 
     $answer = $ps->execute();

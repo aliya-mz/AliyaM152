@@ -46,7 +46,7 @@ function readLastPost(){
 function createPost($commentaire){
   static $ps = null;
 
-  $sql = "INSERT INTO `post` (`commentaire`, `dateCreation`, `dateModification`) VALUES (:commentaire, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+  $sql = "INSERT INTO `post` (`commentaire`) VALUES (:commentaire)";
   if($ps == null){
     $ps = db()->prepare($sql);
   }
