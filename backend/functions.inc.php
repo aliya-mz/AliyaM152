@@ -13,10 +13,11 @@ define("MAX_POST", 70000000);
 function UploadPost(){  
   $tailleTotale = 0;
   //Raccourci d'écriture pour le tableau reçu
-  $fichiers = $_FILES['mesfichiers'];
+  $fichiers = $_FILES['mesFichiers'];
   //Parcourir les fichiers
   for($i=0;$i<count($fichiers['name']);$i++){
-    if($fichiers['size'][$i] <= MAX_IMAGE){
+    if($fichiers['size'][$i] <= MAX_IMAGE && preg_match('/image/',$fichiers['type'][$i])){      
+    
       //Nettoyage du nom de fichier
       $nom_fichier = preg_replace('/[^a-z0-9\.\-]/
       i','',$fichiers['name'][$i]);
@@ -25,14 +26,14 @@ function UploadPost(){
       if(file_exists('uploads/'.$nom_fichier)){
         $nom_fichier = (string)(rand()*10);
       }
-
       //Déplacement depuis le répertoire temporaire
-      move_uploaded_file($fichiers['tmp_name'][$i],'uploads/'.$nom_fichier);
+      var_dump(is_writable('uploads'));
+      var_dump(move_uploaded_file($fichiers['tmp_name'][$i],'uploads/test.png'));
       
       $tailleTotale += $fichiers['size'][$i];
     }
     else{
-      $erreur = 'L\'image '. $fichiers['name'][$i].' est trop grande, veuillez sélectionner une image de taille inférieure à 3M';
+      $erreur = 'Problème avec le fichier '. $fichiers['name'][$i].'. Le fichier sélectionné doit être de type image et de taille inférieure à 3M';
       echo $erreur;
     }  
   }

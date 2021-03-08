@@ -5,6 +5,8 @@
   Sujet      : Page d'accueil du projet portfolio
  */
 
+include("backend/autoload.php");
+
 session_start();
 
 $commentaire = FILTER_INPUT(INPUT_POST, "commentaire", FILTER_SANITIZE_STRING);
@@ -15,7 +17,7 @@ if($submit){
   if($submit = "publier"){
     //vérifier la valider du post et de tous ses éléments, et l'enregistrer
     if($commentaire != null){
-      EnregistrerPost($commentaire, $UploadPost());
+      EnregistrerPost($commentaire, UploadPost());
     }    
   }
   else if($submit = "annuler"){
@@ -39,7 +41,7 @@ if($submit){
   </nav>
   <main>
 
-    <form method="post" action="backend/database/post.php" enctype="multipart/form-data">
+    <form method="post" action="newPost.php" enctype="multipart/form-data">
       <table>
         <tr>
           <td>

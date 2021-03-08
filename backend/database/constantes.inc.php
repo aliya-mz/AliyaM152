@@ -7,5 +7,5 @@
 
 define("HOST", "127.0.0.1");
 define("DBNAME", "nouveau_facebook");
-define("DBUSER", "imagesReader");
+define("DBUSER", "utiliateurPortfolio");
 define("DBPWD", "123");

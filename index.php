@@ -5,7 +5,7 @@
   Sujet      : Page d'accueil du projet portfolio
  */
 
-//include("backend/autoload.php");
+include("backend/autoload.php");
 
 session_start();
 
