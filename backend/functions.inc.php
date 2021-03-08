@@ -5,28 +5,46 @@
   Sujet      : Fonctions du projet
 */
 
+//Limites de taille
+define("MAX_IMAGE", 3000000);
+define("MAX_POST", 70000000);
+
 //Vérifier la validité des fichiers
 function UploadPost(){  
+  $tailleTotale = 0;
   //Raccourci d'écriture pour le tableau reçu
   $fichiers = $_FILES['mesfichiers'];
   //Parcourir les fichiers
   for($i=0;$i<count($fichiers['name']);$i++){
-    if($fichiers['size'][$i]<2000000){
-      // Nettoyage du nom de fichier
+    if($fichiers['size'][$i] <= MAX_IMAGE){
+      //Nettoyage du nom de fichier
       $nom_fichier = preg_replace('/[^a-z0-9\.\-]/
       i','',$fichiers['name'][$i]);
-      //Déplacement depuis le répertoire temporaire
-      move_uploaded_file($fichiers['tmp_name'][$i],'uploads/
-      '.$nom_fichier);
-      //Si le type MIME correspond à une image, on l’affiche
-      if(preg_match('/image/',$fichiers['type'][$i])) {
+
+      //Vérifier que le nom est unique, sinon en générer un 
+      if(file_exists('uploads/'.$nom_fichier)){
+        $nom_fichier = (string)(rand()*10);
       }
+
+      //Déplacement depuis le répertoire temporaire
+      move_uploaded_file($fichiers['tmp_name'][$i],'uploads/'.$nom_fichier);
+      
+      $tailleTotale += $fichiers['size'][$i];
     }
     else{
-      $erreur = 'Veuillez uploader une image de taille inférieure à 2G';
+      $erreur = 'L\'image '. $fichiers['name'][$i].' est trop grande, veuillez sélectionner une image de taille inférieure à 3M';
       echo $erreur;
     }  
   }
+
+  //Vérifier la taille totale des médias
+  if($tailleTotale <= MAX_POST){
+    $erreur = 'Votre post est trop lourd. L\'ensemble de vos images ne doit pas peser plus de 70M';
+    echo $erreur;
+  }
+
+  //Retourner les fichiers du post
+  return $fichiers;
 }
 
 //enregistrer des données

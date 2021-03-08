@@ -13,18 +13,17 @@ $submit = FILTER_INPUT(INPUT_POST, "btnSubmit", FILTER_SANITIZE_STRING);
 //Gestion d'envoi de formlaire
 if($submit){
   if($submit = "publier"){
-    EnregistrerPost($commentaire);
+    //vérifier la valider du post et de tous ses éléments, et l'enregistrer
+    if($commentaire != null){
+      EnregistrerPost($commentaire, $UploadPost());
+    }    
   }
   else if($submit = "annuler"){
- 
+    //Quitter la page de formulaire et retourner à la page d'accueil
+    header('Location: index.php');
+    exit();
   }
 }
-
-//Quand on sélectionne des dossiers
-if(isset($_FILES) && is_array($_FILES) && count($_FILES)>0) {
-  UploadPost();
-}  
-
 ?>
 
 <!DOCTYPE html>
@@ -40,12 +39,12 @@ if(isset($_FILES) && is_array($_FILES) && count($_FILES)>0) {
   </nav>
   <main>
 
-    <form method="post" action="post.php" enctype="multipart/form-data">
+    <form method="post" action="backend/database/post.php" enctype="multipart/form-data">
       <table>
         <tr>
           <td>
             <div class="takeAllWidth">
-              <textarea name="commentaire" placeholder="Ecris quelque chose..." rows="4" cols="50"></textarea>
+              <textarea name="commentaire" placeholder="Ecris une légende..." rows="4" cols="50"></textarea>
             </div>
             <div class="verticalFlex">
               <button class="smallBtn" type="submit" name="annuler" value="annuler">X</button>
