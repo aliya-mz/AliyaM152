@@ -12,10 +12,10 @@ session_start();
 $commentaire = FILTER_INPUT(INPUT_POST, "commentaire", FILTER_SANITIZE_STRING);
 $submit = FILTER_INPUT(INPUT_POST, "btnSubmit", FILTER_SANITIZE_STRING);
 
-//Gestion d'envoi de formlaire
+//Gestion d'envoi de formulaire
 if($submit){
   if($submit = "publier"){
-    //vérifier la valider du post et de tous ses éléments, et l'enregistrer
+    //Vérifier la validité du post et de tous ses éléments, et l'enregistrer
     if($commentaire != null){
       EnregistrerPost($commentaire, UploadPost());
     }    
@@ -46,7 +46,7 @@ if($submit){
         <tr>
           <td>
             <div class="takeAllWidth">
-              <textarea name="commentaire" placeholder="Ecris une légende..." rows="4" cols="50"></textarea>
+              <textarea name="commentaire" placeholder="Ecris une légende..." rows="4" cols="50" required></textarea>
             </div>
             <div class="verticalFlex">
               <button class="smallBtn" type="submit" name="annuler" value="annuler">X</button>

@@ -6,9 +6,10 @@
  */
 
 include("backend/autoload.php");
-
 session_start();
 
+//récupérer les posts dans la bd
+$posts = ReadPosts();
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +25,8 @@ session_start();
   </nav>
   <main>
     <?php
-      //affichage
+      //afficher les posts
+      AfficherPosts($posts);
     ?>
   </main>
   </body>

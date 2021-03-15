@@ -5,7 +5,27 @@
   Sujet      : Gestion de la table "note"
  */
 
-function readPost($idPost){
+ //ok
+function ReadPosts(){
+  static $ps = null;
+  $sql = "SELECT *, DATE_FORMAT(`dateCreation`, '%d/%m/%Y %H:%i:%s') as dateCFormatee, DATE_FORMAT(`dateModification`, '%d/%m/%Y %H:%i:%s') as dateMFormatee FROM post ORDER BY dateCreation DESC";
+
+  if($ps == null){
+    $ps = db()->prepare($sql);
+  }
+  $answer = false;
+  try{
+    if($ps->execute())
+      $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
+  }
+  catch(PDOException $e){
+    echo $e->getMessage();
+  }
+  return $answer;
+}
+
+/*
+function ReadPost($idPost){
   static $ps = null;
   $sql = "SELECT *, DATE_FORMAT(`dateCreation`, '%d/%m/%Y %H:%i:%s') as dateCFormatee, DATE_FORMAT(`dateModification`, '%d/%m/%Y %H:%i:%s') as dateMFormatee FROM post, media WHERE post.idPost = :idPost AND media.idPost = :idPost";
 
@@ -24,8 +44,9 @@ function readPost($idPost){
   }
   return $answer;
 }
+*/
 
-function readLastPost(){
+function ReadLastPost(){
   static $ps = null;
   $sql = "SELECT MAX(idPost) FROM post";
 
@@ -43,7 +64,7 @@ function readLastPost(){
   return $answer;
 }
 
-function createPost($commentaire){
+function CreatePost($commentaire){
   static $ps = null;
 
   $sql = "INSERT INTO `post` (`commentaire`) VALUES (:commentaire)";
@@ -65,7 +86,7 @@ function createPost($commentaire){
   return $answer;
 }
 
-function updatePost($idPost, $commentaire){
+function UpdatePost($idPost, $commentaire){
   static $ps = null;
 
   //ajouter la date de modification
@@ -88,7 +109,7 @@ function updatePost($idPost, $commentaire){
   return $answer;
 }
 
-function deletePost($idPost){
+function DeletePost($idPost){
   static $ps = null;
   $sql = 'DELETE FROM post WHERE idPost = :idPost';
 

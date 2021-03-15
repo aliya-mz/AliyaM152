@@ -8,7 +8,7 @@
 //OK
 
 
-function readMedias($idPost){
+function readMediasByPost($idPost){
   static $ps = null;
   $sql = "SELECT *, DATE_FORMAT(`dateCreation`, '%d/%m/%Y %H:%i:%s') as dateCFormatee FROM media WHERE idPost = :idPost";
 
@@ -20,7 +20,7 @@ function readMedias($idPost){
     $ps->bindParam(':idPost', $idPost, PDO::PARAM_INT);
 
     if($ps->execute())
-      $answer = $ps->fetch(PDO::FETCH_ASSOC);
+      $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
   }
   catch(PDOException $e){
     echo $e->getMessage();
@@ -30,7 +30,7 @@ function readMedias($idPost){
 
 function createMedia($idPost, $typeMedia, $nom){
   static $ps = null;
-  $sql = "INSERT INTO `media` (`idPost`, `type`, `nom`) VALUES ( :idIdee, :typeMedia, :note)";
+  $sql = "INSERT INTO `media` (`idPost`, `type`, `nom`) VALUES ( :idPost, :typeMedia, :nom)";
 
   if($ps == null){
     $ps = db()->prepare($sql);

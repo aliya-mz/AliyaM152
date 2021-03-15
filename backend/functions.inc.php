@@ -16,19 +16,18 @@ function UploadPost(){
   $fichiers = $_FILES['mesFichiers'];
   //Parcourir les fichiers
   for($i=0;$i<count($fichiers['name']);$i++){
-    if($fichiers['size'][$i] >= MAX_IMAGE && preg_match('/image/',$fichiers['type'][$i])){      
+    if($fichiers['size'][$i] <= MAX_IMAGE && preg_match('/image/',$fichiers['type'][$i])){      
     
       //Nettoyage du nom de fichier
-      $nom_fichier = preg_replace('/[^a-z0-9\.\-]/
-      i','',$fichiers['name'][$i]);
+      $nom_fichier = preg_replace('/[^a-z0-9\.\-]/i','',$fichiers['name'][$i]);
 
-      //Vérifier que le nom est unique, sinon en générer un 
-      if(file_exists('uploads/'.$nom_fichier)){
+      //Vérifier si le nom existe déjà dans le répertoire, si oui en générer un nouveau
+      if(file_exists('.backend/uploads/'.$nom_fichier)){
         $nom_fichier = (string)(rand()*10);
       }
-      //Déplacement depuis le répertoire temporaire
-      var_dump(is_writable('uploads'));
-      var_dump(move_uploaded_file($fichiers['tmp_name'][$i],'uploads/test.png'));
+
+      //Déplacement depuis le répertoire temporaire (problème de droits d'écriture)
+      var_dump(move_uploaded_file($fichiers['tmp_name'][$i],'./backend/uploads/'.$nom_fichier));
       
       $tailleTotale += $fichiers['size'][$i];
     }
@@ -48,67 +47,52 @@ function UploadPost(){
   return $fichiers;
 }
 
-//enregistrer des données
+//Enregistrer des données (/!\)
 function EnregistrerPost($commentaire, $fichiers){
   //Créer le nouveau post avec les données entrées par l'utilisateur
   createPost($commentaire);
+  //Récupérer le post
+  $lastPost = (ReadLastPost());
+  echo $lastPost["MAX(idPost)"];
   //Parcourir les fichiers sélectionnés par l'utilisateur et les ajouter dans la BD
   for($i=0;$i<count($fichiers['name']);$i++){
-    createMedia(ReadLastPost(), $fichiers['type'][$i], $fichiers['name'][$i]);
+    createMedia($lastPost["MAX(idPost)"], $fichiers['type'][$i], $fichiers['name'][$i]);
   }
+
+  // /!\ Faire les transactions
+  //https://www.php.net/manual/fr/pdo.begintransaction.php
 }
 
-//Affichage des posts (CHAPITRE 3)
-/*
-function ideesToHtmlTable($idees, $mesIdees, $favoris){
-    $note = "";
+//Afficher les posts (partie fonctionnelle ok, /!\ visuel pas ok)
+function AfficherPosts($posts){
+  //Créer un tableau qui contiendra les posts
+  echo"<table>";
 
-    echo "<tbody>";
-    //afficher chaque idée, afficher chaque champs de l'idée
-    foreach($idees as $idee) {
-      //récupérer la note de l'idée
-      $note = readNoteByIdeeIdAndUser($idee["idIdee"], $_SESSION["idUser"]);
-      echo "<tr>";
+  //parcourir les posts
+  foreach($posts as $post) {
+    //récupérer dans la bd les médias du post
+    $medias = readMediasByPost($post['idPost']);
+    $numMedia = 0;
+    $commentaire = $post["commentaire"];
+    var_dump($medias[0]);
 
-          //fabrication du conteneur avec des flexbox
-          echo "<td>";
-          echo "<div class=\"conteneurIdee\">
-          <div class=\"en-teteIdee\"><div>".$idee['titre']."</div><div>".$idee['dateFormatee']."</div></div>
-          <div class=\"corpsIdee\">
-          <div id=\"categorie\">Catégorie :".readCategorieById($idee['idCategorie'])["nom"]."</div>
-          <div id=\"description\">".$idee['descriptionIdee']."</div>
-          <div id=\"tags\">";
-          //afficher tous les tags
-          $tags = getTagsById($idee['idIdee']);
-          foreach ($tags as $tag) {
-            echo "<label class=\"taglabel\">".$tag["mot"]."</label>";
-          }
-          echo "</div></div>";          
-          
-          if(!$mesIdees){
-            echo "<div class=\"actionsIdee\">";
-            //vérifier si cette idée est dans les favoris de l'utilisateurs et adapter en fonction
-            if(ideeEstFavoris($idee['idIdee'])){
-              //mettre en favoris
-              echo "<button type=\"submit\" name=\"mettreEnFavoris\" value=\"".$idee['idIdee']."\"><img class=\"iconButton\" src=\"img/favorisOui.png\"/></button>";
-            }
-            else{
-              //mettre en non-favoris
-              echo "<button type=\"submit\" name=\"mettreEnFavoris\" value=\"".$idee['idIdee']." \"><img class=\"iconButton\" src=\"img/favorisNon.png\"/></button>";
-            } 
-            echo "</div></div></td>";    
-          }
-          else{
-            echo "<div class=\"actionsIdee\"><button type=\"submit\" title=\"".$note["note"]."\" name=\"annoter\" value=\"".$idee['idIdee']."\">Annoter</button>";
-            //si on est dans la colonne des favoris, afficher le bouton permettant de mettre en favoris 
-            if($favoris){
-              echo "<button type=\"submit\" name=\"mettreEnFavoris\" value=\"".$idee['idIdee']."\"><img class=\"iconButton\" src=\"img/favorisOui.png\"/></button>";
-            }
-            echo "</div></div></td>";
-          }          
-
-        echo "</tr>";
-      }
-    echo "</tbody>";
+    echo "<tr>"; 
+    echo "<td rowspan = \"2\">";
+    //affichage du média
+    echo "<img src=\"backend/uploads/".$medias[0]['nom']."\"/>";
+    echo "</td>";    
+    echo "<td>";
+    //affichage du commentaire
+    echo "<p>". $post["commentaire"] ."</p>";
+    echo "</td>";
+    echo "</tr>"; 
+    echo "<tr>";
+    echo "<td>";
+    //affichage des boutons
+    echo "<button type=\"submit\" name=\"modifier\" value=\"".$post['idPost']."\"><img class=\"iconButton\" src=\"img/modifier.png\"/></button>";
+    echo "<button type=\"submit\" name=\"supprimer\" value=\"".$post['idPost']."\"><img class=\"iconButton\" src=\"img/supprimer.png\"/></button>";
+    echo "</td>";
+    echo "</tr>";
+  }
+  echo"</table>";
 }
-*/
