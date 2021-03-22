@@ -51,7 +51,7 @@ function UploadPost(){
   return $fichiers;
 }
 
-//Enregistrer des données (/!\)
+//Enregistrer des données
 function EnregistrerPost($commentaire, $fichiers){
   try {
 
@@ -79,7 +79,7 @@ function EnregistrerPost($commentaire, $fichiers){
   }  
 }
 
-//Afficher les posts (partie fonctionnelle ok, /!\ visuel en cours)
+//Afficher les posts (/!\ Afficher plusieurs medias)
 function AfficherPosts($posts){
   //Créer un tableau qui contiendra les posts
   echo"<table class=\"conteneurPosts\">";
@@ -128,4 +128,21 @@ function AfficherPosts($posts){
   }
 
   echo"</table>";
+}
+
+function SupprimerPost($idPost){
+  try {
+    db()->beginTransaction();
+
+    //Supprimer du fichier
+    unlink('./backend/uploads/'. $_SESSION["posts"][$idPost]["name"]);
+    //Supprimer dans la BD
+    DeletePost($idPost);
+
+    db()->commit();
+      return true;
+  } catch (Exception $e) {
+    db()->rollBack();
+    return false;
+  }    
 }

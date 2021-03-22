@@ -5,6 +5,13 @@
   Sujet      : Page d'accueil du projet portfolio
  */
 
+/*
+RESTE A FAIRE :
+- Afficher plusieurs medias par post
+- Update/delete
+- Transactions update/delete
+*/
+
 include("backend/autoload.php");
 session_start();
 
@@ -18,13 +25,16 @@ if(!isset($_SESSION["mediaPost"])){
   }
 }
 
+/*
 $submitArriere = FILTER_INPUT(INPUT_POST, "btnArriere", FILTER_SANITIZE_STRING);
 $submitAvant = FILTER_INPUT(INPUT_POST, "btnAvant", FILTER_SANITIZE_STRING);
-$submitModifier = FILTER_INPUT(INPUT_POST, "btnArriere", FILTER_SANITIZE_STRING);
+*/
+
+$submitModifier = FILTER_INPUT(INPUT_POST, "btnModifier", FILTER_SANITIZE_STRING);
 $submitSupprimer = FILTER_INPUT(INPUT_POST, "btnSupprimer", FILTER_SANITIZE_STRING);
 
-
 //Gestion d'envoi de formulaire
+/*
 if($submitArriere){
   //Afficher l'image suivante du post
   $_SESSION["mediaPost"][$submitArriere] += 1;
@@ -43,14 +53,19 @@ else if($submitAvant){
     $_SESSION["mediaPost"][0] = 0;
   }
 }
-else if($submitModifier){
+*/
+
+//ces trucs ne sont jamais appelés
+if($submitModifier){
   //Rediriger vers la page de modification du post sélectionné
-  header('Location: newUpdate.php');
+  echo "pourquoi !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+  echo $submitModifier;
+  header('Location: newUpdate.php&&idPost='.$submitModifier);
   exit();
 }
 else if($submitSupprimer){
   //Supprimer le post sélectionné
-  DeletePost($idPost);
+  SupprimerPost($submitSupprimer);
 }
 ?>
 
@@ -77,7 +92,8 @@ else if($submitSupprimer){
     ?>
   </main>
 
-  <script>   
+  <script> 
+  /*  
   //Faire défiler les médias en remplaçant le média affiché par le suivant ou le précédent (informations fournies par les paramètres)
   function ChangerMediaPost(idPost, nomMedia, type){  
     //affichage du média en fonction du type
@@ -91,6 +107,7 @@ else if($submitSupprimer){
         document.getElementById("mediaBox"+idPost).innerHTML = "<audio class=\"mediaPost\" controls preload=\"auto\"> <source src=\"backend/uploads/"+mediaName+"\" /></audio>";
     }
   } 
+  */
   </script>
   </body>
 </html>
