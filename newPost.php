@@ -56,7 +56,7 @@ if($submit){
         </tr>
         <tr>
           <td>
-            <input type="file" name="mesFichiers[]" colspan="2" accept="image/*" multiple/>            
+            <input type="file" name="mesFichiers[]" colspan="2" accept="audio/*,video/*,image/*" multiple/>            
             <button type="submit" name="btnSubmit" value="publier">Publier</button>
           </td>
         </tr>

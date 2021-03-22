@@ -12,7 +12,7 @@
 }
 
 body{
-    background-color: #A9A5D1;
+    background-color: #F4F2F8;
     color: #555555;
 }
 
@@ -82,7 +82,7 @@ textarea{
 button{
     width:120px;
     height: 25px;
-    background-color: #A2CCE6;
+    background-color: #D5E8F6;
     border:none;
     color: #555555;
 }
@@ -99,8 +99,61 @@ input{
     width: 40px;
 }
 
+.conteneurPosts{
+    width : 50%;
+    margin-top: 50px;
+}
+
+.conteneurPosts tr{
+    height: 350px; 
+    background-color: #D5E8F6;  
+    margin-bottom: 30px;
+}
+
 .verticalFlex{
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+}
+
+.iconButton{
+    height:30px;
+}
+
+.caseImage{
+    display: flex;
+    flex-direction: row;
+    justify-content:center;
+    align-items: center;
+}
+
+.mediaPost{
+    height: 300px;
+}
+
+.caseCommentaire{
+    display: flex;
+    flex-direction: row;
+    justify-content:flex-start;
+    align-items:flex-start;    
+}
+
+.caseBoutons{
+    display: flex;
+    flex-direction: column;
+    justify-content:flex-start;
+    align-items:flex-start;   
+    width: 50px; 
+}
+
+.caseBoutonsCenter{
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items:center;   
+    width: 50px;
+}
+
+.caseCommentaire p{
+    margin:20px;
 }
