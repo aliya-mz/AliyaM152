@@ -53,22 +53,29 @@ function UploadPost(){
 
 //Enregistrer des données (/!\)
 function EnregistrerPost($commentaire, $fichiers){
-  //Si les fichiers sont valables
-  if($fichiers !== false){
-    //Créer le nouveau post avec les données entrées par l'utilisateur
-    createPost($commentaire);
-    //Récupérer le post
-    $lastPost = (ReadLastPost());
-    echo $lastPost["MAX(idPost)"];
-    //Parcourir les fichiers sélectionnés par l'utilisateur et les ajouter dans la BD, s'ils ont bien été ajoutés dans le dossier uploads
-    for($i=0;$i<count($fichiers['name']);$i++){
-      if(file_exists('./backend/uploads/'.$fichiers['name'][$i])){
-        createMedia($lastPost["MAX(idPost)"], $fichiers['type'][$i], $fichiers['name'][$i]);
+  try {
+
+    db()->beginTransaction();
+
+    //Si les fichiers sont valables
+    if($fichiers !== false){
+      //Créer le nouveau post avec les données entrées par l'utilisateur
+      createPost($commentaire);
+      //Récupérer le post
+      $lastPost = (ReadLastPost());
+      echo $lastPost["MAX(idPost)"];
+      //Parcourir les fichiers sélectionnés par l'utilisateur et les ajouter dans la BD, s'ils ont bien été ajoutés dans le dossier uploads
+      for($i=0;$i<count($fichiers['name']);$i++){
+        if(file_exists('./backend/uploads/'.$fichiers['name'][$i])){
+          createMedia($lastPost["MAX(idPost)"], $fichiers['type'][$i], $fichiers['name'][$i]);
+        }
       }
     }
-
-    // /!\ Faire les transactions
-    //https://www.php.net/manual/fr/pdo.begintransaction.php
+    db()->commit();
+      return true;
+  } catch (Exception $e) {
+    db()->rollBack();
+    return false;
   }  
 }
 
