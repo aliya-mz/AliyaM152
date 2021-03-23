@@ -7,9 +7,9 @@
 
 /*
 RESTE A FAIRE :
-- Afficher plusieurs medias par post
-- Update/delete
-- Transactions update/delete
+- Update
+- Delete à tester
+- Update en Ajax
 */
 
 include("backend/autoload.php");
@@ -21,7 +21,7 @@ $_SESSION["posts"]= ReadPosts();
 if(!isset($_SESSION["mediaPost"])){
   $_SESSION["mediaPost"]=[];
   for($i = 0; $i< count($_SESSION["posts"]); $i++){
-    $_SESSION["mediaPost"][$i] = 1;
+    $_SESSION["mediaPost"][$i] = 0;
   }
 }
 
@@ -45,6 +45,10 @@ if($submitArriere){
   }  
 }
 else if($submitAvant){
+  //réinitialiser le tableau qui contient les identifiants des médias en cours
+  for($i = 0; $i< count($_SESSION["posts"]); $i++){
+    $_SESSION["mediaPost"][$i] = 0;
+  }
   //Afficher l'image précédente du post
   $_SESSION["mediaPost"][$submitAvant] -= 1;
 
@@ -52,6 +56,9 @@ else if($submitAvant){
   if($_SESSION["mediaPost"][0]<0){
     $_SESSION["mediaPost"][0] = 0;
   }
+
+  //ré-afficher les médias
+  AfficherPosts($_SESSION["posts"]);
 }
 */
 
@@ -60,7 +67,7 @@ if($submitModifier){
   //Rediriger vers la page de modification du post sélectionné
   echo "pourquoi !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
   echo $submitModifier;
-  header('Location: newUpdate.php&&idPost='.$submitModifier);
+  header('Location: newUpdate.php?idPost='.$submitModifier);
   exit();
 }
 else if($submitSupprimer){
@@ -91,23 +98,5 @@ else if($submitSupprimer){
       AfficherPosts($_SESSION["posts"]);
     ?>
   </main>
-
-  <script> 
-  /*  
-  //Faire défiler les médias en remplaçant le média affiché par le suivant ou le précédent (informations fournies par les paramètres)
-  function ChangerMediaPost(idPost, nomMedia, type){  
-    //affichage du média en fonction du type
-    if($type == "image"){      
-        document.getElementById("mediaBox"+idPost).innerHTML = "<img class=\"mediaPost\" src=\"backend/uploads/"+nomMedia+"\"/>";
-    }   
-    else if($type == "video"){
-        document.getElementById("mediaBox"+idPost).innerHTML = "<video class=\"mediaPost\" autoplay muted loop> <source  src=\"backend/uploads/"+mediaName+"\" /></video>";
-    }
-    else if($type == "audio"){
-        document.getElementById("mediaBox"+idPost).innerHTML = "<audio class=\"mediaPost\" controls preload=\"auto\"> <source src=\"backend/uploads/"+mediaName+"\" /></audio>";
-    }
-  } 
-  */
-  </script>
   </body>
 </html>

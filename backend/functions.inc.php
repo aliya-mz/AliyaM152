@@ -98,16 +98,15 @@ function AfficherPosts($posts){
     echo "</td>";
     echo "<td rowspan='2' class=\"caseImage\" id=\"mediaBox".$post['idPost']."\">";
 
-    //affichage du média en fonction du type
-    if(strpos($medias[0]['type'], "image") !== false){
-      echo "<img class=\"mediaPost\" src=\"backend/uploads/".$medias[0]['nom']."\"/>";
-    }   
-    else if(strpos($medias[0]['type'], "video")!== false){
-      echo "<video class=\"mediaPost\" autoplay muted loop> <source  src=\"backend/uploads/".$medias[0]['nom']."\" /></video>";
+    //Afficher les médias
+    if(count($medias)==1){
+      AfficherMedia($medias[0]);
     }
-    else if(strpos($medias[0]['type'], "audio")!== false){
-      echo "<audio class=\"mediaPost\" controls preload=\"auto\"> <source src=\"backend/uploads/".$medias[0]['nom']."\" /></audio>";
-    }
+    else{
+      foreach($medias as $media){
+        AfficherMedia($media);
+      }
+    }    
     
     echo "</td>";   
     echo "<td class=\"caseBoutonsCenter\">";
@@ -130,12 +129,27 @@ function AfficherPosts($posts){
   echo"</table>";
 }
 
+function AfficherMedia($media){  
+    //affichage du média en fonction du type
+    if(strpos($media['type'], "image") !== false){
+      echo "<img class=\"mediaPost\" src=\"backend/uploads/".$media['nom']."\"/>";
+    }   
+    else if(strpos($media['type'], "video")!== false){
+      echo "<video class=\"mediaPost\" autoplay muted loop> <source  src=\"backend/uploads/".$media['nom']."\" /></video>";
+    }
+    else if(strpos($media['type'], "audio")!== false){
+      echo "<audio class=\"mediaPost\" controls preload=\"auto\"> <source src=\"backend/uploads/".$media['nom']."\" /></audio>";
+    }
+}
+
+//Supprimer le fichier et l'enregistrement dans la BD du post
 function SupprimerPost($idPost){
   try {
     db()->beginTransaction();
 
     //Supprimer du fichier
     unlink('./backend/uploads/'. $_SESSION["posts"][$idPost]["name"]);
+
     //Supprimer dans la BD
     DeletePost($idPost);
 
@@ -145,4 +159,35 @@ function SupprimerPost($idPost){
     db()->rollBack();
     return false;
   }    
+}
+
+//Faire les modifications de fichiers et de commentaire
+function ModifierPost($idPost, $fichiersS, $fichiersA){
+  try {
+    db()->beginTransaction();
+
+    //Supprimer et ajouter les fichiers des médias modifiés par l'utilisateur
+    foreach($fichiersS as $fichierS){
+      unlink('./backend/uploads/'. $_SESSION["posts"][$idPost]["name"]);
+    }    
+
+    //Supprimer dans le post de la BD
+    updatePost($idPost);
+
+    db()->commit();
+      return true;
+  } catch (Exception $e) {
+    db()->rollBack();
+    return false;
+  }    
+}
+
+//Enregistrer les noms de chaque média 
+function GetNomsMedias($idPost){
+  $medias = readMediasByPost($idPost);
+  $nomsMedias = [];
+  for($i = 0; $i <= count($medias); $i++){
+    $nomMedias[$i] = "./backend/uploads/".$medias[$i]["nom"];
+  }
+  return $nomsMedias;
 }
