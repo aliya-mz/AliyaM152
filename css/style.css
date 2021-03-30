@@ -105,7 +105,6 @@ input{
 }
 
 .conteneurPosts tr{
-    height: 350px; 
     background-color: #D5E8F6;  
     margin-bottom: 30px;
 }
@@ -130,6 +129,7 @@ input{
 
 .mediaPost{
     height: 300px;
+    margin:10px;
 }
 
 .caseCommentaire{

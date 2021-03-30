@@ -18,7 +18,7 @@ function UploadPost(){
   for($i=0;$i<count($fichiers['name']);$i++){
     if($fichiers['size'][$i] <= MAX_IMAGE && (preg_match('/image/',$fichiers['type'][$i]) || preg_match('/video/',$fichiers['type'][$i]) || preg_match('/audio/',$fichiers['type'][$i]))){      
       
-      //Nettoyage du nom de fichier
+      //Nettoyer le nom du fichier
       $nom_fichier = preg_replace('/[^a-z0-9\.\-]/i','',$fichiers['name'][$i]);
 
       //Vérifier si le nom existe déjà dans le répertoire, si oui en générer un nouveau
@@ -29,8 +29,10 @@ function UploadPost(){
       //Déplacement depuis le répertoire temporaire (problème de droits d'écriture)
       var_dump(move_uploaded_file($fichiers['tmp_name'][$i],'./backend/uploads/'.$nom_fichier));
       
+      //enregistrer le nom nettoyé et unique
       $fichiers['name'][$i] = $nom_fichier;
 
+      //incrémenter la taille totale
       $tailleTotale += $fichiers['size'][$i];
     }
     else{
@@ -54,7 +56,6 @@ function UploadPost(){
 //Enregistrer des données
 function EnregistrerPost($commentaire, $fichiers){
   try {
-
     db()->beginTransaction();
 
     //Si les fichiers sont valables
@@ -75,6 +76,10 @@ function EnregistrerPost($commentaire, $fichiers){
       return true;
   } catch (Exception $e) {
     db()->rollBack();
+    //si l'ajout dans la bd échoue, supprimer les fichiers dans le dossier
+    for($i=0;$i<count($fichiers['name']);$i++){
+      unlink('./backend/uploads/'.$fichiers['name'][$i]);
+    }    
     return false;
   }  
 }
@@ -83,7 +88,6 @@ function EnregistrerPost($commentaire, $fichiers){
 function AfficherPosts($posts){
   //Créer un tableau qui contiendra les posts
   echo"<table class=\"conteneurPosts\">";
-
   //parcourir les posts
   foreach($posts as $post) {
     //récupérer dans la bd les médias du post
@@ -94,7 +98,6 @@ function AfficherPosts($posts){
     echo "<tr>"; 
     echo "<td class=\"caseBoutonsCenter\">";
     //bouton arrière
-    echo "<button class=\"smallBtn \" type=\"submit\" name=\"btnArriere\" onclick=\"ChangerMediaPost(".$post['idPost'].",". $medias[0]['nom'].", \"image\")\"><img class=\"iconButton\" src=\"img/gauche.png\"/></button>";
     echo "</td>";
     echo "<td rowspan='2' class=\"caseImage\" id=\"mediaBox".$post['idPost']."\">";
 
@@ -111,7 +114,6 @@ function AfficherPosts($posts){
     echo "</td>";   
     echo "<td class=\"caseBoutonsCenter\">";
     //bouton avant
-    echo "<button class=\"smallBtn\" type=\"submit\" name=\"btnAvant\" value=\"".$post['idPost']."\"><img class=\"iconButton\" src=\"img/droite.png\"/></button>";
     echo "</td>";
     echo "<td class=\"caseCommentaire\">";
     //affichage du commentaire
@@ -121,14 +123,14 @@ function AfficherPosts($posts){
     echo "<td class=\"caseBoutons\">";
     //affichage des boutons
     echo "<button class=\"smallBtn\" type=\"submit\" name=\"btnModifier\" value=\"".$post['idPost']."\"><img class=\"iconButton\" src=\"img/modifier.png\"/></button>";
-    echo "<button class=\"smallBtn\" type=\"submit\" name=\"btnSupprimer\" value=\"".$post['idPost']."\"><img class=\"iconButton\" src=\"img/supprimer.png\"/></button>";
+    echo "<button class=\"smallBtn\" type=\"submit\" name=\"btnaSupprimer\" value=\"".$post['idPost']."\"><img class=\"iconButton\" src=\"img/supprimer.png\"/></button>";
     echo "</td>";
     echo "</tr>";
   }
-
   echo"</table>";
 }
 
+//Afficher un média un fonction de son type
 function AfficherMedia($media){  
     //affichage du média en fonction du type
     if(strpos($media['type'], "image") !== false){
@@ -142,47 +144,85 @@ function AfficherMedia($media){
     }
 }
 
+//Afficher le formulaire de modification
+function AfficherFormUpdate($post, $medias){
+  echo "<br/>Modifier le commentaire<br/>";
+  "<input class=\"petitInput\" type=\"text\" name=\"commentairen\" value=\"".$post['commentaire']."\"></input>";
+
+  echo "<br/>Ajouter des medias<br/>";
+  echo "<input type=\"file\" name=\"mesFichiers[]\" colspan=\"2\" accept=\"audio/*,video/*,image/*\" multiple/>";
+
+  echo "<br/>Selectionner les médias à supprimer<br/>";
+  echo "<select class=\"petitInput\" name =\"medias[]\" id=\"medias\" multiple\>";
+  //Afficher les medias dans une liste déroulante
+  foreach($medias as $media) {
+    echo "<option value =\"".$media['idMedia']."\">" . $media['nom'] . "</option>";
+  }
+  echo "</select>";
+
+  //création du input pour valider les modifications
+  echo "<button class=\"petitInput btnSubmit\" type=\"submit\" name=\"action\" value=\"annuler\">Annuler</button>";
+  echo "<button class=\"petitInput btnSubmit\" type=\"submit\" name=\"action\" value=\"enregistrer\">Valider les modifications</button>";
+}
+
 //Supprimer le fichier et l'enregistrement dans la BD du post
 function SupprimerPost($idPost){
   try {
     db()->beginTransaction();
 
-    //Supprimer du fichier
-    unlink('./backend/uploads/'. $_SESSION["posts"][$idPost]["name"]);
+    //Supprimer de la BD les medias du post
+    $medias = readMediasByPost($idPost);
 
-    //Supprimer dans la BD
+    //Supprimer le post
     DeletePost($idPost);
 
     db()->commit();
-      return true;
+
+    //Puisque tout s'est bien passé, supprimer du dossier les medias du post
+    for($i=0;$i<count($fichiers['name']);$i++){
+      if(file_exists('./backend/uploads/'.$fichiers['name'][$i])){
+        createMedia($lastPost["MAX(idPost)"], $fichiers['type'][$i], $fichiers['name'][$i]);
+      }
+    }
+    return true;
   } catch (Exception $e) {
     db()->rollBack();
     return false;
-  }    
+  }
 }
 
 //Faire les modifications de fichiers et de commentaire
-function ModifierPost($idPost, $fichiersS, $fichiersA){
+function ModifierPost($idPost, $commentaire, $fichiersS, $fichiersA){
   try {
     db()->beginTransaction();
-
-    //Supprimer et ajouter les fichiers des médias modifiés par l'utilisateur
+    //Modifer le post de la BD
+    updatePost($idPost, $commentaire);
+    //Supprimer et ajouter les médias modifiés par l'utilisateur
     foreach($fichiersS as $fichierS){
+      //supprimer du dossier
       unlink('./backend/uploads/'. $_SESSION["posts"][$idPost]["name"]);
-    }    
-
-    //Supprimer dans le post de la BD
-    updatePost($idPost);
-
+      //supprimer de la BD
+      deleteMedia($fichierS["idMedia"]);
+    }
+    foreach($fichiersA as $fichierS){
+      //ajouter à la BD
+      if(file_exists('./backend/uploads/'.$fichier['name'])){
+        createMedia($idPost, $typeMedia, $nom);
+      }      
+    }
     db()->commit();
       return true;
   } catch (Exception $e) {
     db()->rollBack();
+    //si l'ajout dans la bd échoue, supprimer les nouveaux fichiers ajoutés lors de la modification
+    for($i=0;$i<count($fichiersA['name']);$i++){
+      unlink('./backend/uploads/'.$fichiersA['name'][$i]);
+    }
     return false;
   }    
 }
 
-//Enregistrer les noms de chaque média 
+//Recuperer les noms de chaque média d'un post
 function GetNomsMedias($idPost){
   $medias = readMediasByPost($idPost);
   $nomsMedias = [];

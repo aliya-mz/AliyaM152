@@ -18,7 +18,7 @@ if($submit){
     //Vérifier la validité du post et de tous ses éléments, et l'enregistrer
     if($commentaire != null){
       EnregistrerPost($commentaire, UploadPost());
-    }    
+    } 
   }
   else if($submit = "annuler"){
     //Quitter la page de formulaire et retourner à la page d'accueil
