@@ -41,7 +41,6 @@ if($submitModifier){
 else if($submitSupprimer){
   //Supprimer le post sélectionné
   SupprimerPost($submitSupprimer);
-  echo "pourquoi !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
 }
 ?>
 

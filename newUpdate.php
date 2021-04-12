@@ -1,7 +1,8 @@
-<?php/*
+<?php
+/*
   Date       : Novembre 2020
   Auteur     : Aliya Myaz
-  Sujet      : Page d'accueil du projet portfolio
+  Sujet      : Page de modification de post
  */
 
 /*PAGE EN COURS*/
@@ -33,9 +34,10 @@ if($action){
       //retourner à la page d'accueil
       header('location: index.php');
       exit();
-    }s
+    }
   }
 }
+  echo $post;
 ?>
 
 <!DOCTYPE html>
@@ -43,16 +45,15 @@ if($action){
 
     <head>
         <meta charset=UTF-8>
-        <title>Modifier un livre</title>
+        <title>Modifier un post</title>
         <link rel="stylesheet" type="text/css" href="css/style.css">
     </head>
-
+    
     <body>
       <nav>
       </nav>
-
       <main>
-        <form action="modifierLivre.php?idPost=<?=$post["idPost"]?>" method="post">
+        <form action="newUpdate.php?idPost=<?=$post["idPost"]?>" method="post">
           <?php
             AfficherFormUpdate($post, $medias);
           ?>

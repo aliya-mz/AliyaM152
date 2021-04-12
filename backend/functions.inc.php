@@ -27,7 +27,7 @@ function UploadPost(){
       }
 
       //Déplacement depuis le répertoire temporaire (problème de droits d'écriture)
-      var_dump(move_uploaded_file($fichiers['tmp_name'][$i],'./backend/uploads/'.$nom_fichier));
+      move_uploaded_file($fichiers['tmp_name'][$i],'./backend/uploads/'.$nom_fichier);
       
       //enregistrer le nom nettoyé et unique
       $fichiers['name'][$i] = $nom_fichier;
@@ -123,7 +123,7 @@ function AfficherPosts($posts){
     echo "<td class=\"caseBoutons\">";
     //affichage des boutons
     echo "<button class=\"smallBtn\" type=\"submit\" name=\"btnModifier\" value=\"".$post['idPost']."\"><img class=\"iconButton\" src=\"img/modifier.png\"/></button>";
-    echo "<button class=\"smallBtn\" type=\"submit\" name=\"btnaSupprimer\" value=\"".$post['idPost']."\"><img class=\"iconButton\" src=\"img/supprimer.png\"/></button>";
+    echo "<button class=\"smallBtn\" type=\"submit\" name=\"btnSupprimer\" value=\"".$post['idPost']."\"><img class=\"iconButton\" src=\"img/supprimer.png\"/></button>";
     echo "</td>";
     echo "</tr>";
   }
@@ -170,20 +170,21 @@ function SupprimerPost($idPost){
   try {
     db()->beginTransaction();
 
-    //Supprimer de la BD les medias du post
+    //Récupérer les médias du post 
     $medias = readMediasByPost($idPost);
-
-    //Supprimer le post
+    //Supprimer le post (et tous ses medias) de la bd
     DeletePost($idPost);
 
-    db()->commit();
+    db()->commit();    
 
     //Puisque tout s'est bien passé, supprimer du dossier les medias du post
-    for($i=0;$i<count($fichiers['name']);$i++){
-      if(file_exists('./backend/uploads/'.$fichiers['name'][$i])){
-        createMedia($lastPost["MAX(idPost)"], $fichiers['type'][$i], $fichiers['name'][$i]);
+    for($i=0;$i<count($medias);$i++){
+      if(file_exists('./backend/uploads/'.$medias[$i]['nom'])){
+        //Supprimer du dossier
+        unlink('./backend/uploads/'.$medias[$i]['nom']);
       }
-    }
+    }    
+
     return true;
   } catch (Exception $e) {
     db()->rollBack();
@@ -191,6 +192,7 @@ function SupprimerPost($idPost){
   }
 }
 
+/*EN COURS*/
 //Faire les modifications de fichiers et de commentaire
 function ModifierPost($idPost, $commentaire, $fichiersS, $fichiersA){
   try {
