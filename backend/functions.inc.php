@@ -121,13 +121,32 @@ function AfficherPosts($posts){
     echo "</td>";
     echo "</td>";   
     echo "<td class=\"caseBoutons\">";
-    //affichage des boutons
-    echo "<button class=\"smallBtn\" type=\"submit\" name=\"btnModifier\" value=\"".$post['idPost']."\"><img class=\"iconButton\" src=\"img/modifier.png\"/></button>";
-    echo "<button class=\"smallBtn\" type=\"submit\" name=\"btnSupprimer\" value=\"".$post['idPost']."\"><img class=\"iconButton\" src=\"img/supprimer.png\"/></button>";
-    echo "</td>";
-    echo "</tr>";
   }
   echo"</table>";
+}
+
+//Afficher carrousel post
+function AfficherCarrousel($idPost, $medias){
+  echo '<div id="_'. $idPost.'" class="carousel slide" data-bs-ride="carousel" data-interval="false">';
+  echo ' <div class="carousel-inner">';
+
+  //parcourir les médias du post et les afficher
+  for ($i = 0; $i <  count($medias); $i++) {
+      echo '<div class="carousel-item">';
+      AfficherMedia($medias[$i]);
+      echo '</div>';
+    }
+    echo ' </div>';
+    echo ' <button class="carousel-control-prev" type="button" data-bs-target="#_'.$idPost.'"  data-bs-slide="prev">';
+    echo '  <span class="carousel-control-prev-icon" aria-hidden="true"></span>';
+    echo '  <span class="visually-hidden" style="color: black;"></span>';
+    echo ' </button>';
+
+    echo ' <button class="carousel-control-next" type="button" data-bs-target="#_'.$idPost.'"data-bs-slide="next">';
+    echo '  <span class="carousel-control-next-icon" aria-hidden="true"></span>';
+    echo '  <span class="visually-hidden"></span>';
+    echo ' </button>';
+    echo '</div>';
 }
 
 //Afficher un média un fonction de son type
@@ -147,13 +166,13 @@ function AfficherMedia($media){
 //Afficher le formulaire de modification
 function AfficherFormUpdate($post, $medias){
   echo "<br/>Modifier le commentaire<br/>";
-  "<input class=\"petitInput\" type=\"text\" name=\"commentairen\" value=\"".$post['commentaire']."\"></input>";
+  echo "<textarea class=\"petitInput\" type=\"text\" name=\"commentairen\">".$post['commentaire']."</textarea>";
 
   echo "<br/>Ajouter des medias<br/>";
   echo "<input type=\"file\" name=\"mesFichiers[]\" colspan=\"2\" accept=\"audio/*,video/*,image/*\" multiple/>";
 
   echo "<br/>Selectionner les médias à supprimer<br/>";
-  echo "<select class=\"petitInput\" name =\"medias[]\" id=\"medias\" multiple\>";
+  echo "<select class=\"petitInput\" name =\"medias[]\" id=\"mediass\" multiple/>";
   //Afficher les medias dans une liste déroulante
   foreach($medias as $media) {
     echo "<option value =\"".$media['idMedia']."\">" . $media['nom'] . "</option>";

@@ -12,14 +12,13 @@ session_start();
 
 //Récupérer le post à modifier
 $idPost = $_GET['idPost'];
+$post = readPostById($idPost);
+$medias = readMediasByPost($idPost);
 
-echo "id post : ".$idPost;
-
+//Récupérer les modifications
+$mediasASupprimer = FILTER_INPUT(INPUT_POST, "mediass", FILTER_SANITIZE_STRING);
 $commentaireN = FILTER_INPUT(INPUT_POST, "commentairen", FILTER_SANITIZE_STRING);
 $action = FILTER_INPUT(INPUT_POST, "action", FILTER_SANITIZE_STRING);
-
-$post = readPostById($idPost);
-$medias = GetNomsMedias($idPost);
 
 if($action){
   if($action == "annuler"){
@@ -28,16 +27,15 @@ if($action){
     exit();
   }
   else if($action == "enregistrer"){
-    //si tous les champs sont remplis
-    if($commentaireN && $mediasN){
+    //si le post contient un commentaire
+    if($commentaireN){
       ModifierPost($idPost, $commentaireN, $mediasASupprimer, UploadPost());
       //retourner à la page d'accueil
-      header('location: index.php');
-      exit();
+      //header('location: index.php');
+      //exit();
     }
   }
 }
-  echo $post;
 ?>
 
 <!DOCTYPE html>
