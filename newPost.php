@@ -34,7 +34,7 @@ if($submit){
     <meta charset="UTF-8">
     <title>Home</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
-  </head>
+    </head>
   <body>
   <nav>
     <a href="index.php">Home</a>

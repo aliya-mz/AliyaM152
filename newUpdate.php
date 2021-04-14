@@ -29,6 +29,7 @@ if($action){
   else if($action == "enregistrer"){
     //si le post contient un commentaire
     if($commentaireN){
+      var_dump($mediasASupprimer);
       ModifierPost($idPost, $commentaireN, $mediasASupprimer, UploadPost());
       //retourner à la page d'accueil
       //header('location: index.php');
@@ -44,17 +45,17 @@ if($action){
     <head>
         <meta charset=UTF-8>
         <title>Modifier un post</title>
-        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css"><!-- Bootstrap CSS  -->
     </head>
     
     <body>
       <nav>
       </nav>
       <main>
-        <form action="newUpdate.php?idPost=<?=$post["idPost"]?>" method="post">
+        <form action="newUpdate.php?idPost=<?=$post["idPost"]?>" method="post" enctype="multipart/form-data">
           <?php
             AfficherFormUpdate($post, $medias);
-          ?>
+           ?>
         </form>
       </main>
     </body>

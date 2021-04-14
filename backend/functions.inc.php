@@ -12,6 +12,7 @@ define("MAX_POST", 70000000);
 //Vérifier la validité des fichiers
 function UploadPost(){  
   $tailleTotale = 0;
+  var_dump($_FILES);
   //Raccourci d'écriture pour le tableau reçu
   $fichiers = $_FILES['mesFichiers'];
   //Parcourir les fichiers
@@ -92,74 +93,72 @@ function AfficherPosts($posts){
   foreach($posts as $post) {
     //récupérer dans la bd les médias du post
     $medias = readMediasByPost($post['idPost']);
-    $numMedia = 0;
     $commentaire = $post["commentaire"];
     
-    echo "<tr>"; 
-    echo "<td class=\"caseBoutonsCenter\">";
-    //bouton arrière
-    echo "</td>";
+    echo "<tr>";    
+    //affichage du carrousle avec les medias
     echo "<td rowspan='2' class=\"caseImage\" id=\"mediaBox".$post['idPost']."\">";
-
-    //Afficher les médias
-    if(count($medias)==1){
-      AfficherMedia($medias[0]);
-    }
-    else{
-      foreach($medias as $media){
-        AfficherMedia($media);
-      }
-    }    
+    AfficherCarrousel($post["idPost"], $medias);
+    echo "</td>";
     
-    echo "</td>";   
-    echo "<td class=\"caseBoutonsCenter\">";
-    //bouton avant
-    echo "</td>";
-    echo "<td class=\"caseCommentaire\">";
     //affichage du commentaire
+    echo "<td class=\"caseCommentaire\">";    
     echo "<p>". $post["commentaire"] ."</p>";
-    echo "</td>";
     echo "</td>";   
-    echo "<td class=\"caseBoutons\">";
+
+    //affichage des boutons modifier et suupprimer
+    echo "<td class=\"caseBoutons\">";    
+    echo "<button class=\"smallBtn\" type=\"submit\" name=\"btnModifier\" value=\"".$post['idPost']."\"><img class=\"iconButton\" src=\"img/modifier.png\"/></button>";
+    echo "<button class=\"smallBtn\" type=\"submit\" name=\"btnSupprimer\" value=\"".$post['idPost']."\"><img class=\"iconButton\" src=\"img/supprimer.png\"/></button>";
+    echo "</td>";
+    echo "</tr>";
   }
   echo"</table>";
 }
 
 //Afficher carrousel post
 function AfficherCarrousel($idPost, $medias){
-  echo '<div id="_'. $idPost.'" class="carousel slide" data-bs-ride="carousel" data-interval="false">';
-  echo ' <div class="carousel-inner">';
+  echo '<div id="carrouselPost'. $idPost.'" class="carousel slide" data-bs-ride="carousel" data-interval="false">';
 
+  echo '<div class="carousel-inner">';
   //parcourir les médias du post et les afficher
-  for ($i = 0; $i <  count($medias); $i++) {
-      echo '<div class="carousel-item">';
-      AfficherMedia($medias[$i]);
-      echo '</div>';
+  for ($i = 0; $i<count($medias); $i++) {
+    echo "nb medias : ".count($medias);
+    if($i == 0){
+      echo '<div class="boxMedia carousel-item active">';
     }
-    echo ' </div>';
-    echo ' <button class="carousel-control-prev" type="button" data-bs-target="#_'.$idPost.'"  data-bs-slide="prev">';
+    else{
+      echo '<div class="boxMedia carousel-item">';
+    }      
+    AfficherMedia($medias[$i]);
+    echo '</div>';
+  }
+  echo ' </div>';
+  //Affiche les contrôles
+    echo ' <button class="carousel-control-prev" type="button" data-bs-target="#carrouselPost'. $idPost.'"  data-bs-slide="prev">';
     echo '  <span class="carousel-control-prev-icon" aria-hidden="true"></span>';
     echo '  <span class="visually-hidden" style="color: black;"></span>';
     echo ' </button>';
 
-    echo ' <button class="carousel-control-next" type="button" data-bs-target="#_'.$idPost.'"data-bs-slide="next">';
+    echo ' <button class="carousel-control-next" type="button" data-bs-target="#carrouselPost'. $idPost.'"data-bs-slide="next">';
     echo '  <span class="carousel-control-next-icon" aria-hidden="true"></span>';
     echo '  <span class="visually-hidden"></span>';
     echo ' </button>';
-    echo '</div>';
+
+  echo '</div>';
 }
 
 //Afficher un média un fonction de son type
 function AfficherMedia($media){  
     //affichage du média en fonction du type
     if(strpos($media['type'], "image") !== false){
-      echo "<img class=\"mediaPost\" src=\"backend/uploads/".$media['nom']."\"/>";
+      echo "<img class=\"mediaPost d-block\" src=\"backend/uploads/".$media['nom']."\"/>";
     }   
     else if(strpos($media['type'], "video")!== false){
-      echo "<video class=\"mediaPost\" autoplay muted loop> <source  src=\"backend/uploads/".$media['nom']."\" /></video>";
+      echo "<video class=\"mediaPost d-block\" autoplay muted loop> <source  src=\"backend/uploads/".$media['nom']."\" /></video>";
     }
     else if(strpos($media['type'], "audio")!== false){
-      echo "<audio class=\"mediaPost\" controls preload=\"auto\"> <source src=\"backend/uploads/".$media['nom']."\" /></audio>";
+      echo "<audio class=\"mediaPost d-block\" controls preload=\"auto\"> <source src=\"backend/uploads/".$media['nom']."\" /></audio>";
     }
 }
 
@@ -172,7 +171,7 @@ function AfficherFormUpdate($post, $medias){
   echo "<input type=\"file\" name=\"mesFichiers[]\" colspan=\"2\" accept=\"audio/*,video/*,image/*\" multiple/>";
 
   echo "<br/>Selectionner les médias à supprimer<br/>";
-  echo "<select class=\"petitInput\" name =\"medias[]\" id=\"mediass\" multiple/>";
+  echo "<select class=\"petitInput\" name =\"mediass[]\" id=\"mediass\" multiple/>";
   //Afficher les medias dans une liste déroulante
   foreach($medias as $media) {
     echo "<option value =\"".$media['idMedia']."\">" . $media['nom'] . "</option>";
@@ -218,6 +217,7 @@ function ModifierPost($idPost, $commentaire, $fichiersS, $fichiersA){
     db()->beginTransaction();
     //Modifer le post de la BD
     updatePost($idPost, $commentaire);
+    var_dump($fichiersS);
     //Supprimer et ajouter les médias modifiés par l'utilisateur
     foreach($fichiersS as $fichierS){
       //supprimer du dossier
@@ -225,9 +225,9 @@ function ModifierPost($idPost, $commentaire, $fichiersS, $fichiersA){
       //supprimer de la BD
       deleteMedia($fichierS["idMedia"]);
     }
-    foreach($fichiersA as $fichierS){
+    foreach($fichiersA as $fichierA){
       //ajouter à la BD
-      if(file_exists('./backend/uploads/'.$fichier['name'])){
+      if(file_exists('./backend/uploads/'.$fichierA['name'])){
         createMedia($idPost, $typeMedia, $nom);
       }      
     }
@@ -252,3 +252,5 @@ function GetNomsMedias($idPost){
   }
   return $nomsMedias;
 }
+
+

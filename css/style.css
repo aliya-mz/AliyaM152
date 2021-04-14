@@ -47,13 +47,18 @@ form{
 
 table{
     border-collapse: collapse;
-    width:100%;
+    width: 100%;
+}
+
+tbody{
+    width: 100%;
 }
 
 tr{
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    height: 400px;
 }
 
 td{
@@ -100,7 +105,7 @@ input{
 }
 
 .conteneurPosts{
-    width : 50%;
+    width : 100%;
     margin-top: 50px;
 }
 
@@ -157,4 +162,8 @@ input{
 
 .caseCommentaire p{
     margin:20px;
+}
+
+.boxMedia{
+    
 }
